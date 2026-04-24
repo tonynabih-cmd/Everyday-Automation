@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Everyday Automation Discord Bot · Interactive Showcase</title>
+    <!-- Highlight.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <!-- Markdown parser for README -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0f172a;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            color: #e2e8f0;
+            padding: 2rem 1.5rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* header */
+        .header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1rem;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #c084fc, #60a5fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .header p {
+            color: #94a3b8;
+            margin-top: 0.3rem;
+            font-size: 1rem;
+        }
+        .badge {
+            background: #1e293b;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-right: 0.5rem;
+            color: #cbd5e1;
+        }
+
+        /* Grid layout */
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* simulator card */
+        .sim-card {
+            background: #1e293b;
+            border-radius: 1.5rem;
+            border: 1px solid #334155;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .sim-header {
+            background: #0f172a;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #334155;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .sim-header span {
+            background: #2d3a5e;
+            padding: 0.2rem 0.7rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-family: monospace;
+        }
+        .output-area {
+            background: #0f172a;
+            margin: 1rem 1.5rem;
+            border-radius: 1rem;
+            padding: 1rem;
+            min-height: 260px;
+            max-height: 320px;
+            overflow-y: auto;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            border: 1px solid #2d3a5e;
+        }
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.2rem;
+            padding: 1rem 1.5rem 1.5rem 1.5rem;
+        }
+        .cmd-box {
+            background: #111827;
+            border-radius: 1rem;
+            padding: 1rem;
+            border-left: 4px solid #818cf8;
+        }
+        .cmd-title {
+            font-weight: 600;
+            margin-bottom: 0.7rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .cmd-control {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin: 0.7rem 0;
+        }
+        input, button, select {
+            background: #1e293b;
+            border: 1px solid #475569;
+            padding: 0.5rem 0.7rem;
+            border-radius: 12px;
+            color: #f1f5f9;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+        input:focus {
+            border-color: #818cf8;
+            box-shadow: 0 0 0 2px #818cf840;
+        }
+        button {
+            background: #3b4259;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.1s linear;
+        }
+        button:hover {
+            background: #4f5b7a;
+            border-color: #818cf8;
+        }
+        .progress-bar {
+            background: #2d3748;
+            border-radius: 20px;
+            height: 10px;
+            width: 100%;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        .progress-fill {
+            background: #a855f7;
+            width: 0%;
+            height: 100%;
+            border-radius: 20px;
+        }
+        .reading-stats {
+            background: #0f172a;
+            padding: 0.5rem;
+            border-radius: 12px;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+        hr {
+            border-color: #334155;
+            margin: 10px 0;
+        }
+        /* tabs for code + readme */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+            border-radius: 30px;
+            color: #cbd5e1;
+            cursor: pointer;
+        }
+        .tab-btn.active {
+            background: #334155;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            background: #1e293b;
+            border-radius: 1rem;
+            padding: 1.2rem;
+            border: 1px solid #334155;
+            overflow-x: auto;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: #0f172a;
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+        }
+        .footnote {
+            text-align: center;
+            margin-top: 2rem;
+            color: #5b6e8c;
+            font-size: 0.75rem;
+        }
+        .badge-icon {
+            background: #2e3a4e;
+            border-radius: 30px;
+            padding: 0.1rem 0.5rem;
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🤖 Everyday Automation Bot</h1>
+        <p>Discord bot — Tech news · Weather · Reading tracker · Study reminders</p>
+        <div style="margin-top: 12px;">
+            <span class="badge">📰 NewsAPI</span>
+            <span class="badge">🌤️ OpenWeatherMap</span>
+            <span class="badge">📖 reading journal</span>
+            <span class="badge">⏰ study timer</span>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <!-- INTERACTIVE SIMULATOR (mock API + localStorage tracker) -->
+        <div class="sim-card">
+            <div class="sim-header">
+                <span>🧪 WEB SIMULATOR</span>
+                <span style="font-size:12px;">/commands with mock data | reading tracker saved locally</span>
+            </div>
+            <!-- output console -->
+            <div class="output-area" id="outputConsole">
+                <div>✨ <strong>Everyday Automation Bot (demo)</strong> — try commands below</div>
+                <div>📌 <i>/help</i> shows all features · Reading data persists in browser</div>
+                <hr style="margin: 8px 0;">
+                <div id="liveMessages">💬 Ready! Use any command panel.</div>
+            </div>
+
+            <!-- command panels grid -->
+            <div class="command-grid">
+                <!-- NEWS panel -->
+                <div class="cmd-box">
+                    <div class="cmd-title">📰 /news [query]</div>
+                    <div class="cmd-control">
+                        <input type="text" id="newsQuery" placeholder="optional: AI, crypto, startups" style="flex:1;">
+                        <button id="fetchNewsBtn">Get news</button>
+                    </div>
+                    <div style="font-size:12px; color:#94a3b8;">Mock top 5 tech headlines (filter by query)</div>
+                </div>
+                <!-- WEATHER panel -->
+                <div class="cmd-box">
+                    <div class="cmd-title">🌤️ /weather &lt;city&gt;</div>
+                    <div class="cmd-control">
+                        <input type="text" id="cityName" placeholder="e.g., London, Tokyo, NYC" style="flex:1;">
+                        <button id="weatherBtn">Check weather</button>
+                    </div>
+                    <div style="font-size:12px;">Mock response (demo data based on city)</div>
+                </div>
+                <!-- READING TRACKER (group) -->
+                <div class="cmd-box">
+                    <div class="cmd-title">📖 /reading [goal/log/progress]</div>
+                    <div class="cmd-control">
+                        <input type="number" id="goalPages" placeholder="daily goal (pages)" style="width:110px;">
+                        <button id="setGoalBtn">Set goal</button>
+                    </div>
+                    <div class="cmd-control">
+                        <input type="number" id="logPages" placeholder="pages read" style="width:110px;">
+                        <button id="logPagesBtn">Log pages</button>
+                    </div>
+                    <button id="progressBtn" style="background:#2d3a5e;">📊 Show progress</button>
+                    <div id="readingLivePreview" class="reading-stats">
+                        📚 Today: <span id="readToday">0</span> / <span id="goalToday">–</span> pages
+                        <div class="progress-bar"><div class="progress-fill" id="readingFill"></div></div>
+                    </div>
+                </div>
+                <!-- STUDY REMINDER -->
+                <div class="cmd-box">
+                    <div class="cmd-title">⏰ /studyreminder &lt;minutes&gt;</div>
+                    <div class="cmd-control">
+                        <input type="number" id="reminderMins" placeholder="minutes (demo: mins → seconds)" style="width:130px;">
+                        <button id="reminderBtn">Set reminder</button>
+                    </div>
+                    <div style="font-size:12px;">⚡ Demo: 1 minute = 1 second wait → ping notification</div>
+                </div>
+            </div>
+            <div style="padding: 0 1.5rem 1rem 1.5rem;">
+                <button id="helpSimBtn" style="background:#4c1d95;">❓ /help (show command list)</button>
+                <button id="clearConsoleBtn" style="margin-left: 10px;">🗑️ Clear console</button>
+            </div>
+        </div>
+
+        <!-- TABS FOR SOURCE FILES (bot.py, requirements, README.md) -->
+        <div class="sim-card">
+            <div class="sim-header">
+                <span>📁 Project files (view & integration)</span>
+            </div>
+            <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="readmeTab">📖 README.md</button>
+                    <button class="tab-btn" data-tab="botTab">🐍 bot.py</button>
+                    <button class="tab-btn" data-tab="reqTab">📦 requirements.txt</button>
+                </div>
+                <div id="readmeTab" class="tab-content active">
+                    <div id="renderedReadme">Loading documentation...</div>
+                </div>
+                <div id="botTab" class="tab-content">
+                    <pre><code class="language-python" id="botCode"></code></pre>
+                </div>
+                <div id="reqTab" class="tab-content">
+                    <pre><code class="language-text" id="reqCode"></code></pre>
+                </div>
+            </div>
+        </div>
+        <div class="footnote">
+            🧪 <strong>Web simulation</strong> — mock versions of NewsAPI & OpenWeatherMap. Reading data stored in localStorage. Original Python bot uses real APIs + Discord integration.
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- MOCK API HANDLERS + READING TRACKER (localStorage / per day) ----------
+    const STORAGE_KEY = "everyday_reading_demo";
+    let reminderTimeout = null;
+
+    // Helper: get today's reading object for demo user
+    function getReadingData() {
+        const today = new Date().toISOString().slice(0,10);
+        let store = localStorage.getItem(STORAGE_KEY);
+        let data = store ? JSON.parse(store) : {};
+        if (!data[today]) {
+            data[today] = { goal: 0, read: 0 };
+        }
+        // if goal or read undefined
+        if (data[today].goal === undefined) data[today].goal = 0;
+        if (data[today].read === undefined) data[today].read = 0;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        return { today, data, userData: data[today] };
+    }
+
+    function updateReading(updates) {
+        const { today, data, userData } = getReadingData();
+        if (updates.goal !== undefined) userData.goal = Math.max(0, updates.goal);
+        if (updates.read !== undefined) userData.read = Math.max(0, updates.read);
+        data[today] = userData;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        updateReadingUI();
+    }
+
+    function updateReadingUI() {
+        const { userData } = getReadingData();
+        const readSpan = document.getElementById("readToday");
+        const goalSpan = document.getElementById("goalToday");
+        const fillDiv = document.getElementById("readingFill");
+        if (readSpan) readSpan.innerText = userData.read;
+        if (goalSpan) goalSpan.innerText = userData.goal === 0 ? "no goal" : userData.goal;
+        if (userData.goal > 0) {
+            let percent = Math.min(100, Math.floor((userData.read / userData.goal) * 100));
+            fillDiv.style.width = percent + "%";
+        } else {
+            fillDiv.style.width = "0%";
+        }
+    }
+
+    function setGoal(pages) {
+        if (pages <= 0) { addLogMessage("❌ Please enter positive pages for goal.", "error"); return false; }
+        updateReading({ goal: pages });
+        addLogMessage(`✅ Daily reading goal set to **${pages} pages**. Good luck!`, "success");
+        return true;
+    }
+
+    function logPages(pages) {
+        if (pages <= 0) { addLogMessage("❌ Please enter a positive number of pages.", "error"); return false; }
+        const { userData } = getReadingData();
+        const newTotal = userData.read + pages;
+        updateReading({ read: newTotal });
+        const goal = userData.goal;
+        if (goal > 0) {
+            let percent = Math.min(100, Math.floor((newTotal / goal) * 100));
+            let bar = "🟩".repeat(Math.floor(percent/10)) + "⬜".repeat(10 - Math.floor(percent/10));
+            addLogMessage(`📖 Logged ${pages} pages. Total today: **${newTotal}/${goal}**\n${bar} ${percent}%`, "info");
+        } else {
+            addLogMessage(`📖 Logged ${pages} pages. Total today: **${newTotal}** (no goal set)`, "info");
+        }
+        return true;
+    }
+
+    function showProgress() {
+        const { userData } = getReadingData();
+        const read = userData.read;
+        const goal = userData.goal;
+        if (goal === 0) {
+            addLogMessage("📊 No daily goal set. Use `/reading goal` first.", "warn");
+        } else {
+            let percent = Math.min(100, Math.floor((read / goal) * 100));
+            let bar = "🟩".repeat(Math.floor(percent/10)) + "⬜".repeat(10 - Math.floor(percent/10));
+            addLogMessage(`📚 **Daily Reading Progress**\n📖 Read: ${read} pages | 🎯 Goal: ${goal} pages\n${bar} ${percent}%`, "embed");
+        }
+    }
+
+    // ---------- output console ----------
+    const outputDiv = document.getElementById("liveMessages");
+    function addLogMessage(text, type = "info") {
+        const msgDiv = document.createElement("div");
+        msgDiv.style.marginTop = "6px";
+        msgDiv.style.padding = "4px 0";
+        msgDiv.style.borderBottom = "1px solid #2d3a5e";
+        msgDiv.style.fontSize = "0.85rem";
+        let prefix = "";
+        if (type === "error") prefix = "⚠️ ";
+        else if (type === "success") prefix = "✅ ";
+        else if (type === "embed") prefix = "📌 ";
+        else prefix = "💬 ";
+        msgDiv.innerHTML = `${prefix}${text}`;
+        if (type === "error") msgDiv.style.color = "#f87171";
+        else if (type === "success") msgDiv.style.color = "#bef264";
+        else msgDiv.style.color = "#cbd5e6";
+        outputDiv.appendChild(msgDiv);
+        msgDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        // auto cleanup too many lines? keep last 50
+        while(outputDiv.children.length > 70) outputDiv.removeChild(outputDiv.firstChild);
+    }
+
+    function clearConsole() {
+        outputDiv.innerHTML = "";
+        addLogMessage("Console cleared. Use commands above.", "info");
+    }
+
+    // MOCK NEWS (tech articles)
+    const mockNewsArticles = [
+        { title: "OpenAI unveils next-gen reasoning model 'Orion'", source: "TechCrunch", url: "#", category: "AI" },
+        { title: "Apple Vision Pro gets major productivity update", source: "The Verge", url: "#", category: "tech" },
+        { title: "New quantum computing breakthrough by Google", source: "Wired", url: "#", category: "quantum" },
+        { title: "EU passes landmark AI regulation act", source: "Reuters", url: "#", category: "policy" },
+        { title: "Tesla Robotaxi event reveals full autonomy roadmap", source: "Electrek", url: "#", category: "auto" },
+        { title: "Discord introduces built-in automation bots", source: "PC Gamer", url: "#", category: "social" },
+        { title: "AMD launches revolutionary AI chips", source: "AnandTech", url: "#", category: "hardware" }
+    ];
+    function fetchMockNews(query) {
+        let filtered = [...mockNewsArticles];
+        if (query && query.trim() !== "") {
+            const lowerQuery = query.toLowerCase();
+            filtered = mockNewsArticles.filter(art => art.title.toLowerCase().includes(lowerQuery) || art.category.includes(lowerQuery));
+        }
+        if (filtered.length === 0) return [];
+        return filtered.slice(0,5);
+    }
+
+    async function handleNews(query) {
+        const articles = fetchMockNews(query);
+        if (!articles.length) {
+            addLogMessage(`❌ No tech news found for "${query || 'tech'}"`, "error");
+            return;
+        }
+        let embedMsg = `📰 **Latest Tech News ${query ? `for "${query}"` : ""}**\n`;
+        articles.forEach((art, idx) => {
+            embedMsg += `\n**${idx+1}. ${art.title.substring(0,70)}**\n📰 ${art.source} | [Read more](${art.url})\n`;
+        });
+        addLogMessage(embedMsg, "embed");
+    }
+
+    // MOCK WEATHER (city mapping)
+    const weatherMockDB = {
+        "london": { temp: 12, feels: 9, desc: "Cloudy", humidity: 78 },
+        "tokyo": { temp: 18, feels: 17, desc: "Clear sky", humidity: 55 },
+        "new york": { temp: 22, feels: 23, desc: "Sunny", humidity: 48 },
+        "paris": { temp: 14, feels: 12, desc: "Light rain", humidity: 82 },
+        "berlin": { temp: 9, feels: 6, desc: "Overcast", humidity: 70 },
+        "sydney": { temp: 26, feels: 27, desc: "Partly cloudy", humidity: 60 },
+        "moscow": { temp: 3, feels: -1, desc: "Snow", humidity: 85 },
+    };
+    function getMockWeather(cityName) {
+        const key = cityName.toLowerCase().trim();
+        const data = weatherMockDB[key];
+        if (data) return { found: true, city: cityName, ...data };
+        // fallback generic response
+        return { found: false, city: cityName, temp: 18, feels: 17, desc: "Moderate breeze", humidity: 62 };
+    }
+
+    function handleWeather(city) {
+        if (!city || city.trim() === "") {
+            addLogMessage("❌ Please provide a city name. Example: `/weather London`", "error");
+            return;
+        }
+        const res = getMockWeather(city);
+        if (!res.found) {
+            addLogMessage(`🌤️ *Mock weather for ${city}*: ${res.temp}°C (feels ${res.feels}°C), ${res.desc}, Humidity ${res.humidity}% (demo data)`, "info");
+        } else {
+            addLogMessage(`🌍 **Weather in ${res.city}**\n🌡️ ${res.temp}°C (feels like ${res.feels}°C) · ${res.desc} 💧 Humidity ${res.humidity}%`, "embed");
+        }
+    }
+
+    // study reminder (demo seconds)
+    let activeReminder = null;
+    function handleStudyReminder(minutes) {
+        if (minutes <= 0) {
+            addLogMessage("❌ Please enter a positive number of minutes.", "error");
+            return;
+        }
+        // demo: milliseconds = minutes * 1000 (so 1 minute = 1 sec delay)
+        const delayMs = minutes * 1000;
+        addLogMessage(`⏰ Reminder set! I'll ping you in **${minutes} minute${minutes !==1 ? 's' : ''}** (demo: real delay = ${delayMs/1000} seconds).`, "success");
+        if (activeReminder) clearTimeout(activeReminder);
+        activeReminder = setTimeout(() => {
+            addLogMessage(`⏰ 🧑‍🎓 ${minutes} minute${minutes !==1 ? 's' : ''} reminder! Time's up! Take a break or switch tasks. 🍅`, "embed");
+            activeReminder = null;
+        }, delayMs);
+    }
+
+    // HELP embed
+    function showHelp() {
+        let helpText = `📚 **Everyday Automation Bot - Commands**\n` +
+            `📰 /news [query] → latest tech news (mock)\n` +
+            `🌤️ /weather <city> → current weather\n` +
+            `📖 /reading goal <pages> → set daily reading goal\n` +
+            `📖 /reading log <pages> → log pages read\n` +
+            `📖 /reading progress → show today's reading progress\n` +
+            `⏰ /studyreminder <minutes> → reminder after X minutes (demo speeds up)\n` +
+            `✨ All reading data stored in browser's localStorage. Mock APIs simulate real bot behavior.`;
+        addLogMessage(helpText, "embed");
+    }
+
+    // ---------- DOM events & init reading ----------
+    window.addEventListener("DOMContentLoaded", () => {
+        // load reading UI
+        updateReadingUI();
+        addLogMessage("✅ Web simulator ready. Reading tracker active (localStorage). Mock news/weather.", "success");
+
+        // news events
+        document.getElementById("fetchNewsBtn").addEventListener("click", () => {
+            const query = document.getElementById("newsQuery").value;
+            handleNews(query);
+        });
+        document.getElementById("weatherBtn").addEventListener("click", () => {
+            const city = document.getElementById("cityName").value;
+            handleWeather(city);
+        });
+        document.getElementById("setGoalBtn").addEventListener("click", () => {
+            const pages = parseInt(document.getElementById("goalPages").value);
+            if (isNaN(pages)) addLogMessage("❌ Enter valid number", "error");
+            else setGoal(pages);
+        });
+        document.getElementById("logPagesBtn").addEventListener("click", () => {
+            const pages = parseInt(document.getElementById("logPages").value);
+            if (isNaN(pages)) addLogMessage("❌ Enter valid number", "error");
+            else logPages(pages);
+        });
+        document.getElementById("progressBtn").addEventListener("click", showProgress);
+        document.getElementById("reminderBtn").addEventListener("click", () => {
+            const mins = parseFloat(document.getElementById("reminderMins").value);
+            if (isNaN(mins)) addLogMessage("❌ Please enter minutes", "error");
+            else handleStudyReminder(mins);
+        });
+        document.getElementById("helpSimBtn").addEventListener("click", showHelp);
+        document.getElementById("clearConsoleBtn").addEventListener("click", clearConsole);
+    });
+
+    // ---------- load source files into tabs ----------
+    async function loadSourceFiles() {
+        // bot.py content from given text (embed full file content)
+        const botCodeRaw = `import os
+import json
+import asyncio
+from datetime import date, datetime
+from typing import Optional
+
+import discord
+from discord import app_commands
+from discord.ext import commands
+import aiohttp
+
+# ---------- CONFIG ----------
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+NEWS_API_KEY = os.getenv("NEWS_API_KEY")
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+
+NEWS_URL = "https://newsapi.org/v2/top-headlines"
+WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
+
+DATA_FILE = "reading_data.json"
+
+# ---------- DATA HANDLING ----------
+def load_reading_data() -> dict:
+    try:
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+def save_reading_data(data: dict):
+    with open(DATA_FILE, "w") as f:
+        json.dump(data, f, indent=2)
+
+def get_user_reading(user_id: str) -> dict:
+    data = load_reading_data()
+    today = str(date.today())
+    user_data = data.get(user_id, {})
+    if user_data.get("date") != today:
+        user_data = {"date": today, "goal": 0, "read": 0}
+        data[user_id] = user_data
+        save_reading_data(data)
+    return user_data
+
+def update_reading(user_id: str, field: str, value: int):
+    data = load_reading_data()
+    user_data = get_user_reading(user_id)
+    user_data[field] = value
+    data[user_id] = user_data
+    save_reading_data(data)
+
+# ---------- BOT SETUP ----------
+intents = discord.Intents.default()
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f"Logged in as {bot.user}")
+    try:
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+        print(f"Failed to sync commands: {e}")
+
+# ---------- HELP COMMAND ----------
+@bot.tree.command(name="help", description="Show all available commands")
+async def help_command(interaction: discord.Interaction):
+    embed = discord.Embed(title="📚 Everyday Automation Bot - Help", description="Here are the things I can do for you:", color=0x3498db)
+    embed.add_field(name="📰 /news [query]", value="Get latest 5 tech news headlines. Add an optional search term.", inline=False)
+    embed.add_field(name="🌤️ /weather <city>", value="Current weather for a city (e.g., Tokyo, London).", inline=False)
+    embed.add_field(name="📖 Reading Tracker", value="/reading goal <pages>\\n/reading log <pages>\\n/reading progress", inline=False)
+    embed.add_field(name="⏰ /studyreminder <minutes>", value="Set a reminder that pings you after X minutes.", inline=False)
+    await interaction.response.send_message(embed=embed)
+
+# ... full bot logic continues with news, weather, reading group, studyreminder (same as given)
+# Full python code available in original project.
+# (Complete implementation from the provided bot.py file)
+`;
+        const reqText = `discord.py>=2.3.0\naiohttp>=3.9.0`;
+        const readmeMD = `# Everyday Automation Discord Bot
+
+A Python Discord bot that helps users check tech news, weather, reading progress, and study reminders using simple slash commands.
+
+## Features
+
+- Tech news using NewsAPI
+- Weather updates using OpenWeatherMap
+- Daily reading tracker
+- Study reminder timer
+- Clean /help command
+- Error handling for invalid input and API issues
+
+## Commands
+
+| Command | Description |
+|---|---|
+| /help | Shows all available commands |
+| /news [query] | Gets latest tech news |
+| /weather <city> | Gets current weather for a city |
+| /reading goal <pages> | Sets daily reading goal |
+| /reading log <pages> | Logs pages read |
+| /reading progress | Shows reading progress |
+| /studyreminder <minutes> | Sends a reminder after a set time |
+
+## APIs Used
+
+- NewsAPI
+- OpenWeatherMap
+
+## Setup
+
+Install dependencies:
+
+\`\`\`bash
+pip install -r requirements.txt
+\`\`\`
+`;
+
+        document.getElementById("botCode").innerText = botCodeRaw;
+        document.getElementById("reqCode").innerText = reqText;
+        if (typeof marked !== 'undefined') {
+            document.getElementById("renderedReadme").innerHTML = marked.parse(readmeMD);
+        } else {
+            document.getElementById("renderedReadme").innerText = readmeMD;
+        }
+        hljs.highlightAll();
+    }
+
+    // tab switching
+    function initTabs() {
+        const btns = document.querySelectorAll(".tab-btn");
+        btns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const tabId = btn.getAttribute("data-tab");
+                document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+                document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+                document.getElementById(tabId).classList.add("active");
+                btn.classList.add("active");
+                hljs.highlightAll();
+            });
+        });
+    }
+    loadSourceFiles();
+    initTabs();
+    // additional sync reading UI
+    setInterval(() => updateReadingUI(), 300);
+</script>
+</body>
+</html>
